@@ -1,5 +1,5 @@
 import './categories.css'
-import Oerview from "../home_page/overview";
+import Overview from "../home_page/overview";
 import Gallery from '../products/pGallery'
 import { useState } from 'react'
 import apples from '../../src/assets/apples.jpg'
@@ -35,7 +35,7 @@ import yoghurt from '../../src/assets/yoghurt.jpg'
 import zucchini from '../../src/assets/zucchini.jpg'
 
 
-function Categories(){
+const Categories = () =>{
     const category = [
         {id: 1, image:grapes, name:"Fruits"},
         {id: 2, image:cauliflower, name:"Vegetables"},
@@ -284,30 +284,48 @@ function Categories(){
             image:rice
         }
       ]
-   const [search, setSearch] = useState(Product_Info)
+   const [searchTerm, setSearchTerm] = useState("");
+   const [search, setSearch] = useState(Product_Info);
 //    function filter(e){
 //     if (e ===1){
         
 //     }
 //    }
-const handleClick =(id)=>{
-    setSearch(  Product_Info.filter((li)=> li.category === id))
+const handleClick =(category)=>{
     
-}
+    setSearch(
+        Product_Info.filter((product) => {
+            const categoryMatch = category === "All" || product.category.toLowerCase() === category.toLowerCase();
+            const searchTermMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+            return categoryMatch && searchTermMatch;
+        })
+    )
+    
+};
 //   }
     return(
         <div className='home_page'>
-        <Oerview/>
+        <Overview/>
         <div className='containers'>
+        <input
+          type="text"
+          placeholder='Search for a category'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <div className='category_list'>
-        {category.map(item=>
-        <div className="category" key={item.id} onClick={(e)=>{
-            console.log(item.id)
-           handleClick(item.name);
-        }}>
-            <img src={item.image} />
-            <h4>{item.name}</h4>
-        </div>
+        {[...category, {id: 0, image: "", name: "All"}].map((item) =>(
+            <div
+            className='category'
+            key={item.id}
+            onClick={() => handleClick(item.name)}
+            >
+                <img src={item.image} alt={item.name}/>
+                <h4>{item.name}</h4>
+
+            </div>
+        )
+        
         )}
 
         </div>
