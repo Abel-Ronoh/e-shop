@@ -286,21 +286,30 @@ const Categories = () =>{
       ]
    const [searchTerm, setSearchTerm] = useState("");
    const [search, setSearch] = useState(Product_Info);
+   const [filteredProducts, setfilteredProducts] = useState(Product_Info);
 //    function filter(e){
 //     if (e ===1){
         
 //     }
 //    }
-const handleClick =(category)=>{
-    
-    setSearch(
-        Product_Info.filter((product) => {
-            const categoryMatch = category === "All" || product.category.toLowerCase() === category.toLowerCase();
-            const searchTermMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-            return categoryMatch && searchTermMatch;
-        })
-    )
-    
+const handleCategoryClick = (category) => {
+    const categoryMatch = category === "All";
+    const filtered = Product_Info.filter((product) => {
+        const categoryMatches = categoryMatch || product.category.toLowerCase() === category.toLowerCase();
+        const searchTermMatches = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+        return categoryMatches && searchTermMatches;
+    });
+    setFilteredProducts(filtered);
+};
+
+const handleSearchInputChange = (input) => {
+    setSearchTerm(input);
+    const filtered = Product_Info.filter((product) => {
+        const categoryMatch = category === "All" || product.category.toLowerCase() === category.toLowerCase();
+        const searchTermMatch = product.name.toLowerCase().includes(input.toLowerCase());
+        return categoryMatch && searchTermMatch;
+    });
+    setFilteredProducts(filtered);
 };
 //   }
     return(
@@ -311,7 +320,7 @@ const handleClick =(category)=>{
           type="text"
           placeholder='Search for a category'
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => handleSearchInputChange(e.target.value)}
         />
         <div className='category_list'>
         {[...category, {id: 0, image: "", name: "All"}].map((item) =>(
@@ -329,7 +338,7 @@ const handleClick =(category)=>{
         )}
 
         </div>
-        <Gallery Product_Info={search}/>
+        <Gallery Product_Info={filteredProducts}/>
         </div>
         </div>
     )
